@@ -2,12 +2,12 @@ library(tidyverse)
 library(scales)
 library(gridExtra)
 library(corrplot)
-library(caret)
+library(caret)   #for general data preparation and model fitting
 library(plotly)
 library(plyr)
 library(ggplot2)
 library(gdata)
-library(xgboost)
+library(xgboost)   #for fitting the xgboost model
 library(prettydoc)
 library(magrittr)
 library(RColorBrewer)
@@ -264,7 +264,7 @@ train  %>% ggplot(aes(Policy_Sales_Channel,fill=Vehicle_Damage)) +
   theme_classic()
 
 
-# Correlation  {.tabset .tabset-fade .tabset-pills}
+# Correlation  
 
 #Remove 'id' and 'Response' columns before doing correlation matrix
 numeric_cols = sapply(train, is.numeric)
@@ -272,9 +272,7 @@ train_num_only= train[, numeric_cols]
 
 train_num_only$id = NULL
 train_num_only$Response = NULL
-
-#Correlation matrix 1 not good, since correlation can be perform on numeric only
-
+#Correlation matrix 1 is good, all charachters are removed, since correlation can be perform on numeric only
 cor_result = cor(as.matrix(train_num_only))
 class(train_corr)
 head(train_corr)
@@ -282,22 +280,16 @@ train_corr <- train_num_only %>% mutate_if(is.numeric, list(scale))
 cor(train_corr, use="pairwise.complete.obs", method = "spearman")   %>%  
   
   corrplot( method = "pie", outline = T, addgrid.col = "darkgray", mar = c(0.1,0,0.1,0), order = 'AOE', type = "full",rect.col = "black", rect.lwd = 5, cl.pos = "b", tl.col = "black", tl.cex = 1, cl.cex =.5,tl.srt=50,col=c('#3C3838',"gray",'#338076'),number.cex = 7/ncol(train_corr))
-
-
-## Correlation matrix 2
+## Correlation matrix 2 is not good, removed some non-numeric columns
 numeric_cols1 = sapply(train, is.numeric)
 train_num_only1= train[, numeric_cols]
 
-train_num_only$id = NULL
-train_num_only$Response = NULL
-class(train_corr)
-head(train_corr)
 train_corr <- train_num_only %>% mutate_if(is.numeric, list(scale))
 cor(train_num_only1, use="pairwise.complete.obs", method = "spearman")   %>%  
   
   corrplot( method = "pie", outline = T, addgrid.col = "darkgray", mar = c(0.1,0,0.1,0), order = 'AOE', type = "full",rect.col = "black", rect.lwd = 5, cl.pos = "b", tl.col = "black", tl.cex = 1, cl.cex =.5,tl.srt=50,col=c('#3C3838',"gray",'#338076'),number.cex = 7/ncol(train_corr))
 
-# XGB MODEL {.tabset .tabset-fade .tabset-pills}
+# XGB MODEL Boosting is a technique in machine learning that has been shown to produce models with high predictive accuracy.
 #**How deal with am imbalanced dataset? Well there are many ways, most of them are correct, but, this time I tried a different approach**
   
 #  **How we proceed:**
@@ -315,7 +307,7 @@ cor(train_num_only1, use="pairwise.complete.obs", method = "spearman")   %>%
 ov_sampling <- ovun.sample(formula = Response ~. ,data=train,method='both',N=100,seed=12)
 train_2<- ov_sampling$data
 # GRID SEARCH
-xgb_gridsearch <- function(train,ntrees)
+xgb_gridsearch <- function(train,ntrees) 
 {
   set.seed(1)
   print("Best hyperparameters combination:")
@@ -373,12 +365,12 @@ xgb_gridsearch <- function(train,ntrees)
 }
 
 best_tune = xgb_gridsearch(train= train_2,ntrees = 100)
-```
+
 
 ## XGB model
-**scale_pos_weight= 334399/46710 = 7.15**
+##**scale_pos_weight= 334399/46710 = 7.15**
   
-  ```{r}
+
 knitr::kable(table(train$Response),
              col.names = c('Response','#'))
 
@@ -448,11 +440,11 @@ test_predictions <- train_xgt(train_data=train,
                               test_data = test,
                               best_tune=best_tune)$Predictions
 
-``` 
+
 
 ## Test XGB on a balanced dataset
-**As a further test for our model, we will rebalance the original dataset and evaluate the model performance on a balanced dataset**
-  ```{r}
+##**As a further test for our model, we will rebalance the original dataset and evaluate the model performance on a balanced dataset**
+
 # Rebalance dataset
 ov_sampling <- ovun.sample(formula = Response ~. ,data=train,method='both',N=381109,seed=12)
 train_3<- ov_sampling$data
