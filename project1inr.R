@@ -274,12 +274,16 @@ train_num_only$id = NULL
 train_num_only$Response = NULL
 #Correlation matrix 1 is good, all charachters are removed, since correlation can be perform on numeric only
 cor_result = cor(as.matrix(train_num_only))
-class(train_corr)
-head(train_corr)
+
 train_corr <- train_num_only %>% mutate_if(is.numeric, list(scale))
 cor(train_corr, use="pairwise.complete.obs", method = "spearman")   %>%  
   
   corrplot( method = "pie", outline = T, addgrid.col = "darkgray", mar = c(0.1,0,0.1,0), order = 'AOE', type = "full",rect.col = "black", rect.lwd = 5, cl.pos = "b", tl.col = "black", tl.cex = 1, cl.cex =.5,tl.srt=50,col=c('#3C3838',"gray",'#338076'),number.cex = 7/ncol(train_corr))
+
+#to check
+class(train_corr)
+head(train_corr)
+
 ## Correlation matrix 2 is not good, removed some non-numeric columns
 numeric_cols1 = sapply(train, is.numeric)
 train_num_only1= train[, numeric_cols]
@@ -310,7 +314,7 @@ train_2<- ov_sampling$data
 xgb_gridsearch <- function(train,ntrees) 
 {
   set.seed(1)
-  print("Best hyperparameters combination:")
+  print("Best hyperparameters combination: ")
   
   # One hot encoding
   dmy <- dummyVars(" ~ .", data = train)
@@ -326,7 +330,7 @@ xgb_gridsearch <- function(train,ntrees)
   grid_train$Response = factor(grid_train$Response)
   levels(grid_train$Response) <- c("X0","X1")
   
-  ntrees <- ntrees
+  ntrees <- 100
   
   # parameters grid
   xgb_grid_1 = expand.grid(
@@ -366,6 +370,12 @@ xgb_gridsearch <- function(train,ntrees)
 
 best_tune = xgb_gridsearch(train= train_2,ntrees = 100)
 
+### Result: [1] "Best hyperparameters combination: "
+#nrounds max_depth  eta gamma colsample_bytree min_child_weight subsample
+#57     100         8 0.03     0              0.5                1         1
+#Warning message:
+ # In train.default(x = as.matrix(grid_train %>% select(-Response)),  :
+  #                   The metric "Accuracy" was not in the result set. ROC will be used instead.
 
 ## XGB model
 ##**scale_pos_weight= 334399/46710 = 7.15**
@@ -439,8 +449,22 @@ train_xgt(train_data=train,test_data = test,best_tune=best_tune)
 test_predictions <- train_xgt(train_data=train,
                               test_data = test,
                               best_tune=best_tune)$Predictions
-
-
+##Result:
+#[1] "XGB Train:"
+#[1]	train-auc:0.836316 
+#[201]	train-auc:0.867711 
+#[401]	train-auc:0.873112 
+#[601]	train-auc:0.877118 
+#[801]	train-auc:0.881791 
+#[1000]	train-auc:0.885831 
+#[1] "XGB Cross Validation:"
+#[1]	train-auc:0.843106+0.000454	test-auc:0.842567+0.001672 
+#[201]	train-auc:0.898071+0.000562	test-auc:0.853427+0.001382 
+#[401]	train-auc:0.922333+0.001022	test-auc:0.849781+0.001612 
+#[601]	train-auc:0.939464+0.000268	test-auc:0.847084+0.001377 
+#[801]	train-auc:0.952323+0.000428	test-auc:0.845004+0.001232 
+#[1000]	train-auc:0.962475+0.000576	test-auc:0.843221+0.001058 
+ #[WARNING] Deprecated: --self-contained. use --embed-resources --standalone
 
 ## Test XGB on a balanced dataset
 ##**As a further test for our model, we will rebalance the original dataset and evaluate the model performance on a balanced dataset**
