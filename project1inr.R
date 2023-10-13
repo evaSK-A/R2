@@ -575,15 +575,59 @@ train_xgt <- function(train_data,best_tune)
 train_xgt(train_data=train_3,
           best_tune=best_tune)
 
-```
+##Result:
+#[1] "XGB is starting..."
+#[1] "XGB Train:"
+#[1]	train-auc:0.835375 
+#[201]	train-auc:0.870385 
+#[401]	train-auc:0.878229 
+#[601]	train-auc:0.884396 
+#[801]	train-auc:0.891099 
+#[1000]	train-auc:0.897147 
+#[1] "XGB Cross Validation:"
+#[1]	train-auc:0.841556+0.000592	test-auc:0.841168+0.001930 
+#[201]	train-auc:0.908385+0.000739	test-auc:0.885868+0.001345 
+#[401]	train-auc:0.937084+0.001071	test-auc:0.904150+0.001179 
+#[601]	train-auc:0.954770+0.000433	test-auc:0.916613+0.001105 
+#[801]	train-auc:0.967149+0.000889	test-auc:0.926366+0.001435 
+#[1000]	train-auc:0.976076+0.000254	test-auc:0.934172+0.000907 
+#Setting direction: controls < cases
+#$`Features Importance:`
+
+#$`Confusion Matrix`
+#TableGrob (2 x 2) "arrange": 3 grobs
+#z     cells    name                 grob
+#1 1 (2-2,1-1) arrange       gtable[layout]
+#2 2 (2-2,2-2) arrange   gtable[rowhead-fg]
+#3 3 (1-1,1-2) arrange text[GRID.text.1020]
+
+#$`Roc Curve`
+
+#Call:
+#  roc.default(response = label_train, predictor = cv$pred, levels = c(0,     1))
+
+#Data: cv$pred in 190444 controls (label_train 0) < 190665 cases (label_train 1).
+#Area under the curve: 0.9342
+
+#Warning message:
+#  The `<scale>` argument of `guides()` cannot be `FALSE`. Use "none" instead as of ggplot2
+#3.3.4.
+#This warning is displayed once every 8 hours.
+#Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated. 
 
 # Submission (Checking Results) {.tabset .tabset-fade .tabset-pills}
 ## Submit XGB predictions
-```{r}
+
 last_submission <- cbind(submission,predicted_response=round(test_predictions),real_predictions=test_predictions)
 head(last_submission,5)
-```
 
+##Result:
+#  id Response predicted_response real_predictions
+#1 381110        0                  0     0.0008423320
+#2 381111        0                  0     0.4132671952
+#3 381112        0                  0     0.2912655771
+#4 381113        0                  0     0.0185078885
+#5 381114        0                  0     0.0003101903
 
 
 
