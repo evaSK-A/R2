@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Health Insurance Cross Sell Prediction"
 author: "Eva Salivonik"
 date: "Tuesday, October 18th 2023"
 output:
@@ -44,29 +44,24 @@ library(gridExtra)   # to put more
 library(grid)  
 library(tinytex)
 library(latexpdf)
+library(latex2exp)
+library(tinytex)
 library(Ckmeans.1d.dp)
 knitr::opts_chunk$set(echo = FALSE)
 ```
-```{r}
-library(latex2exp)
 
-library(tinytex)
-```
-# Business Introduction
+## Business Introduction
 
-## Abstract
+### Abstract
 Cross-selling is a sales strategy employed to encourage customers to increase their spending by acquiring a product that complements their current purchase. This approach finds utility in the insurance industry, where it serves as a means for companies to introduce new products to their existing customer base. Leveraging machine learning models can streamline the labor-intensive process of sifting through customer records, resulting in significant time and cost savings. However, the implementation of machine learning models poses its own set of challenges, some of which we aim to address in this project. Recognizing the pivotal role of data in business, we prioritize customer privacy, adhering to the principles of the Ethical Machine Learning framework. Our team conducts data analysis and model development following the CRISP-DM methodology.
 
 
-## Background 
-Triks Insurance Inc., a prominent Life Insurance Agent in the town of XYZ, boasts an extensive client base of 381,109 households within the region. Presently, they are in negotiations with a prominent Auto Insurance provider, GOOL Auto Insurance, with plans to introduce their insurance product. GOOL Auto Insurance has requested ABC Insurance to furnish a report indicating the proportion of their client base likely to express interest in Auto insurance.
+### Background 
+Triks Insurance Inc., a prominent Life Insurance Agent in the town of XYZ, boasts an extensive client base of 381,109 households within the region. Presently, they are in negotiations with a prominent Auto Insurance provider, GOOL Auto Insurance, with plans to introduce their insurance product. GOOL Auto Insurance has requested Triks Insurance to furnish a report indicating the proportion of their client base likely to express interest in Auto insurance.
 
 Rather than embarking on the arduous task of manually sifting through their customer database, Triks Insurance Inc. has opted to engage the SK team to create a machine learning system. This system's purpose is not only to predict potential Auto Insurance candidates once but continuously over time. By comprehending the customer base and leveraging demographic information about a prospect, this machine learning system will assess whether a prospect falls into the category of a "good" or "bad" candidate.
 
 By implementing this solution, Triks Insurance's sales team will be better prepared for their cross-selling endeavors. They can hone their focus on the most promising leads, thus maximizing the efficiency of their marketing budget while concentrating on the most lucrative prospects.
-
-
-
 
 
 The proposed solution serves several valuable purposes:
@@ -81,34 +76,34 @@ The proposed solution serves several valuable purposes:
 
 The client was initially unaware that the data they possess holds the answers to their questions. Some of their concerns and inquiries include:
 
-*What information or resources do you require from us to deliver this solution?
+-What information or resources do you require from us to deliver this solution?
 
-*Can the system accurately classify customers?
+-Can the system accurately classify customers?
 
-*How will the system handle cases where a customer who should have qualified for GOOL Insurance is not selected?
+-How will the system handle cases where a customer who should have qualified for GOOL Insurance is not selected?
 
-## Objective 
+### Objective 
 The aim of this project is to create one or more models to generate an initial report for GOOL Insurance on behalf of Triks Insurance Ltd. Additionally, the project seeks to develop a predictive tool that can determine whether a customer, based on specific characteristics, qualifies as a potential candidate for their upcoming cross-selling campaign.
 
-## Business Understanding:
+### Business Understanding:
 To understand and address business problems:
 
-*Determine the key variables to predict (good/bad candidates).
-*Define relevant metrics related to these variables.
-*Grasp project objectives and requirements.
-*Create specific questions, such as what distinguishes a good from a bad prospect.
-*Assess current sales practices for identifying prospects.
-*Establish a success metric for the project.
-*Identify data sources with answers to these questions.
-*Select data that accurately measures the target and relevant features.
-*Consider if the existing system requires additional data for the project.
-*Evaluate the need for external data sources or system updates.
+-Determine the key variables to predict (good/bad candidates).
+-Define relevant metrics related to these variables.
+-Grasp project objectives and requirements.
+-Create specific questions, such as what distinguishes a good from a bad prospect.
+-Assess current sales practices for identifying prospects.
+-Establish a success metric for the project.
+-Identify data sources with answers to these questions.
+-Select data that accurately measures the target and relevant features.
+-Consider if the existing system requires additional data for the project.
+-Evaluate the need for external data sources or system updates.
 
 Then, translate this knowledge into a data mining problem and create a preliminary plan to achieve the project goals.
 
 ## Data Understanding:
 
-Having understood the business statement, it's clear that ABC Insurance faced a choice. They could have promoted Auto Insurance to all their customers, but that wouldn't have been the most efficient use of their marketing budget. It's more cost-effective to focus on customers likely to respond to the Aplus Auto campaign. This targeted approach saves money and doesn't bother customers uninterested in the new product.
+Having understood the business statement, it's clear that Triks Insurance faced a choice. They could have promoted Auto Insurance to all their customers, but that wouldn't have been the most efficient use of their marketing budget. It's more cost-effective to focus on customers likely to respond to the GOOL Auto campaign. This targeted approach saves money and doesn't bother customers uninterested in the new product.
 
 To achieve this, we can leverage historical data from past campaigns to build a model for predicting which customers are promising prospects. We start by collecting relevant data, addressing data quality issues, gaining initial insights from the data, and identifying interesting trends or patterns within it.
 
@@ -116,7 +111,7 @@ The data for this project was downloaded from Kaggle, weblink: [https://www.kagg
 For privacy and security, the customer names have been masked with an id.The data is in csv format.
 
 
-## Data Description :
+### Data Description :
 
 | Variable Name          | Variable Description                               |
 | :-------------------  | :------------------------------------------------ |
@@ -140,31 +135,23 @@ For privacy and security, the customer names have been masked with an id.The dat
 
 
 
-## Loading Data
+### Loading Data
 
-```{r}
+```{r echo=TRUE}
 
 test <- read.csv("c://DATA//test.csv")
 train <- read.csv('c://DATA//train.csv')
 submission <- read.csv('c://DATA//sample_submission.csv')
 ```
 
-## Helper Functions ??
 
-```{r}
-ks <- function (x) { number_format(accuracy = 1,
-                                   scale = 1/1000,
-                                   suffix = "k",
-                                   big.mark = ",")(x) }
-```
-
-##Determine the dimension of our dataset:
+###Determine the dimension of our dataset:
 
 ```{r}
 dim(train)
 ```
 
-## View the contents and structure of our dataset:
+### View the contents and structure of our dataset:
 
 ```{r}
 head(train)
@@ -177,18 +164,26 @@ head(test)
 ```{r}
 str(train)
 ```
+### Helper Function
+Helper functions are used in conjunction with the main verbs to make specific tasks and calculations a bit easier. 
+```{r}
+ks <- function (x) { number_format(accuracy = 1,
+                                   scale = 1/1000,
+                                   suffix = "k",
+                                   big.mark = ",")(x) }
+```
 
-### EDA ??
+## Exploratory Data Analysis (EDA) 
 
 We can create a profile of the ideal customer for our insurance company:
 
 The ideal customer doesn't currently have active insurance.
 They have a history of vehicle accidents or damage.
 Their vehicle is relatively new, between 1 to 2 years old.
-They fall within the age range of 30 to 55.
-They pay an annual premium between 30,000 and 40,000.
+Their age range of 30 to 55.
+Their annual premium between 30,000 and 40,000.
 They are more inclined to use channels like channel 25 or channel 125, rather than channel 155.
-## Customer Response
+### Customer Response
 
 ```{r}
 a1 <- train %>% mutate(c_resp = factor(Response)) %>%
@@ -198,7 +193,7 @@ a1 <- train %>% mutate(c_resp = factor(Response)) %>%
   scale_y_continuous(labels=ks) +
   labs(title='Customer Response',x='Customer response') + 
   theme(legend.title=element_blank()) +
-  scale_fill_manual(values= c('#3C3838','#338076'),name='') +
+  scale_fill_manual(values= c('#081A00','#008055'),name='') +
   theme_classic() 
 
 fig1 <- ggplotly(a1)
@@ -206,9 +201,9 @@ fig1
 #
 ```
 
-## What affect customer response?
+### What affect customer response?
 
-# Response by previous insurance
+#### Response by previous insurance
 
 ```{r}
 a2 <- train %>% mutate(c_resp=factor(Response),Insured=factor(Previously_Insured)) %>%
@@ -218,11 +213,11 @@ a2 <- train %>% mutate(c_resp=factor(Response),Insured=factor(Previously_Insured
   scale_y_continuous(labels=percent) + 
   theme(legend.title = element_blank()) + 
   labs(x='Customer response',title='Response by previous insurances') +
-  scale_fill_manual(values= c('#3C3838','#338076')) +
+  scale_fill_manual(values= c('#081A00','#008055')) +
   theme_classic()
 ```
 
-# Response by past vehicle damage
+#### Response by past vehicle damage
 
 ```{r}
 a3 <- train %>% mutate(c_resp=factor(Response)) %>%
@@ -231,11 +226,11 @@ a3 <- train %>% mutate(c_resp=factor(Response)) %>%
   geom_bar(color="black",position='fill') +
   scale_y_continuous(labels=percent) + 
   labs(x='Customer response',title='Response by vehicle history') +
-  scale_fill_manual(values= c('#3C3838','#338076'),name="Damaged?") +
+  scale_fill_manual(values= c('#081A00','#008055'),name="Damaged?") +
   theme_classic()
 ```
 
-# Response by gender
+#### Response by gender
 
 ```{r}
 a4 <- train %>% mutate(c_resp=factor(Response)) %>%
@@ -244,11 +239,11 @@ a4 <- train %>% mutate(c_resp=factor(Response)) %>%
   geom_bar(color="black",position='fill') +
   scale_y_continuous(labels=percent) + 
   labs(x='Customer response',title='Response by gender') +
-  scale_fill_manual(values= c('#3C3838','#338076'),name="Gender") +
+  scale_fill_manual(values= c('#081A00','#008055'),name="Gender") +
   theme_classic()
 ```
 
-# Response by vehicle age
+#### Response by vehicle age
 
 ```{r}
 a5 <- train %>% mutate(c_resp=factor(Response)) %>%
@@ -257,14 +252,14 @@ a5 <- train %>% mutate(c_resp=factor(Response)) %>%
   geom_bar(color="black",position='fill') +
   scale_y_continuous(labels=percent) + 
   labs(x='Customer response',title='Response by vehicle age') +
-  scale_fill_manual(values= c('#3C3838','#338076',"#333B80"),name='Vehicle age') +
+  scale_fill_manual(values= c('#081A00','#008055',"#0000CC"),name='Vehicle age') +
   theme_classic()
 
 grid.arrange(a1,a3,a4,a5)
 
 ```
 
-## Response by age
+#### Response by age
 
 ```{r}
 a6 <- train %>% mutate(c_resp=factor(Response)) %>%
@@ -273,13 +268,13 @@ a6 <- train %>% mutate(c_resp=factor(Response)) %>%
   geom_density(alpha=0.7) +
   labs(title='Customer response by age') +
   scale_y_continuous(labels=percent) +
-  scale_fill_manual(values= c('#3C3838','#338076'),name='Response')+
+  scale_fill_manual(values= c('#081A00','#008055'),name='Response')+
   theme_classic()
 fig2 <- ggplotly(a6)
 fig2
 ```
 
-## Response by Annual Premium
+#### Response by Annual Premium
 
 ```{r}
 a7 =  train %>% mutate(c_resp=factor(Response)) %>%
@@ -289,7 +284,7 @@ a7 =  train %>% mutate(c_resp=factor(Response)) %>%
   labs(title='Customer response by annual premium') +
   scale_x_continuous(breaks=scales::pretty_breaks(n = 25),labels=ks) +
   scale_y_continuous(labels=ks) +
-  scale_fill_manual(values= c('#3C3838','#338076'),name='Response') +
+  scale_fill_manual(values= c('#081A00','#008055'),name='Response') +
   theme_classic() +
   theme(legend.position="top",axis.text.x = element_text(size =8 ,angle = 30)) 
 
@@ -299,45 +294,45 @@ fig3
 
 ```
 
-## What Affect vehicle damage?
+### What is affecting vehicle damage?
 
-# Age by Vehicle Damage
+#### Age by Vehicle Damage
 
 ```{r}
 b1 <- train %>% ggplot(aes(Age,fill=Vehicle_Damage)) + 
   geom_density(alpha=0.7) + labs(title='Who had a vehicle damaged?') + 
   scale_y_continuous(labels=percent) + 
-  scale_fill_manual(values= c('#3C3838','#338076'),name="Damaged?") +
+  scale_fill_manual(values= c('#081A00','#008055'),name="Damaged?") +
   theme_classic()
 ```
 
-# Vehicle damage by vehicle age
+#### Vehicle damage by vehicle age
 
 ```{r}
 b2<- train %>% ggplot(aes(Vehicle_Damage,fill=Vehicle_Age)) + 
   geom_bar(position='fill',color='black') + 
   scale_y_continuous(labels=percent) + 
   labs(title='Vehicle damaged by age') +
-  scale_fill_manual(values= c('#3C3838','#338076',"#333B80"),name="Vehicle age") +
+  scale_fill_manual(values= c('#081A00','#008055',"#0000CC"),name="Vehicle age") +
   theme_classic()
 ```
 
-# vehicle damage by gender
+#### vehicle damage by gender
 
 ```{r}
 b3 <- train %>% ggplot(aes(Vehicle_Damage,fill=Gender)) + 
   geom_bar(position = 'fill',color='black') + 
   scale_y_continuous(labels=percent) + 
   labs(title='Vehicle damage by gender') +
-  scale_fill_manual(values= c('#3C3838','#338076')) +
+  scale_fill_manual(values= c('#081A00','#008055')) +
   theme_classic()
 
 grid.arrange(b1,b2,b3,layout_matrix=rbind(c(1),c(2,3)))
 ```
 
-## Annual Premium
+### Annual Premium
 
-# annual premium by vehicle damage
+#### annual premium by vehicle damage
 
 ```{r}
 c1 <- train %>% ggplot(aes(Annual_Premium,fill=Vehicle_Damage)) + 
@@ -345,7 +340,7 @@ c1 <- train %>% ggplot(aes(Annual_Premium,fill=Vehicle_Damage)) +
   scale_x_continuous(breaks=scales::pretty_breaks(n =30),labels=ks) +
   scale_y_continuous(labels=ks) +
   labs(title='Annual Premium based on past vehicle damages') + 
-  scale_fill_manual(values= c('#3C3838','#338076'),name='Damaged?') +
+  scale_fill_manual(values= c('#081A00','#008055'),name='Damaged?') +
   theme_classic() +
   theme(legend.position="top",axis.text.x = element_text(size =10 ,angle = 30))
 
@@ -354,7 +349,7 @@ c2 <- train %>% ggplot(aes(Annual_Premium,fill=Vehicle_Age)) +
   scale_x_continuous(breaks=scales::pretty_breaks(n = 30),labels=ks) +
   scale_y_continuous(labels=ks) +
   labs(title='Annual Premium based on Vehicle Age') + 
-  scale_fill_manual(values= c('#3C3838','#338076',"#333B80"),name="Vehicle age")+
+  scale_fill_manual(values= c('#081A00','#008055',"#0000CC"),name="Vehicle age")+
   theme_classic() +
   theme(legend.position="top",axis.text.x = element_text(size =10 ,angle = 30))
 
@@ -365,7 +360,7 @@ c3 <- train %>% mutate(insured=factor(Previously_Insured)) %>%
   scale_x_continuous(breaks=scales::pretty_breaks(n = 30),labels=ks) +
   scale_y_continuous(labels=ks) +
   labs(title='Annual Premium based on Vehicle Age') + 
-  scale_fill_manual(values= c('#338076','#3C3838'),name="Status")+
+  scale_fill_manual(values= c('#008055','#081A00'),name="Status")+
   theme_classic() +
   theme(legend.position="top",axis.text.x = element_text(size =10 ,angle = 30))
 
@@ -376,7 +371,7 @@ grid.arrange(c1,c2)
 c3
 ```
 
-## Age distribution by Vehicle Age
+#### Age distribution by Vehicle Age
 
 ```{r}
 d3 <- train %>% 
@@ -384,7 +379,7 @@ d3 <- train %>%
   geom_density(alpha=0.8) + 
   labs(title='Age distribution by Vehicle Age') + 
   scale_x_continuous(breaks=scales::pretty_breaks(n = 22)) + 
-  scale_fill_manual(values=c('#3C3838','#338076',"#333B80")) + 
+  scale_fill_manual(values=c('#081A00','#008055',"#0000CC")) + 
   theme_classic()
 
 fig10 <- ggplotly(d3)
@@ -392,7 +387,7 @@ fig10 <- ggplotly(d3)
 fig10
 ```
 
-## Policy sales channel
+#### Policy sales channel
 
 ```{r}
 train %>% mutate(c_resp=factor(Response)) %>%
@@ -401,7 +396,7 @@ train %>% mutate(c_resp=factor(Response)) %>%
   geom_density(alpha=0.5,color="white") + 
   labs(title='Response by sales channel') + 
   scale_x_continuous(breaks=scales::pretty_breaks(n = 22)) + 
-  scale_fill_manual(values=c('#3C3838','#338076'),name='Response') +
+  scale_fill_manual(values=c('#081A00','#008055'),name='Response') +
   theme_classic()
 
 train %>% mutate(insured=factor(Previously_Insured)) %>% mutate(insured=revalue(insured,c("0"="Not Insured","1"="Insured"))) %>% 
@@ -409,28 +404,28 @@ train %>% mutate(insured=factor(Previously_Insured)) %>% mutate(insured=revalue(
   geom_density(alpha=0.5,color="white") + 
   labs(title='Distribution of sales channel by Insured/Not insured customers') + 
   scale_x_continuous(breaks=scales::pretty_breaks(n = 22)) + 
-  scale_fill_manual(values=c('#3C3838','#338076'),name='Have insurance?') +
+  scale_fill_manual(values=c('#081A00','#008055'),name='Have insurance?') +
   theme_classic()
 
 train  %>% ggplot(aes(Policy_Sales_Channel,fill=Vehicle_Age)) + 
   geom_density(alpha=0.5,color="white") + 
   labs(title='Distribution of sales channel by Vehicle age') + 
   scale_x_continuous(breaks=scales::pretty_breaks(n = 22)) + 
-  scale_fill_manual(values=c('#3C3838','#338076','red'),name='Vehicle age') +
+  scale_fill_manual(values=c('#081A00','#008055','#0000CC'),name='Vehicle age') +
   theme_classic()
 
 train  %>% ggplot(aes(Policy_Sales_Channel,fill=Vehicle_Damage)) + 
   geom_density(alpha=0.5,color="white") + 
   labs(title='Distribution of sales channel by Vehicle Damage') + 
   scale_x_continuous(breaks=scales::pretty_breaks(n = 22)) + 
-  scale_fill_manual(values=c('#3C3838','#338076','red'),name='Damaged?') +
+  scale_fill_manual(values=c('#081A00','#008055','#0000CC'),name='Damaged?') +
   theme_classic()
 
 ```
 
-# Correlation
+## Correlation
 
-Examine the relationships between independent numerical variables by creating a correlation matrix to assess the correlation coefficients between these variables. Before constructing the correlation matrix, exclude the 'id' and 'Response' columns.
+Examine the relationships between independent numerical variables by creating a correlation matrix to assess the correlation coefficients between these variables. Before constructing the correlation matrix, exclude the 'id' and 'Response' columns(correlation can be perform on numeric only).
 
 
 ```{r}
@@ -441,8 +436,6 @@ train_num_only$id = NULL
 train_num_only$Response = NULL
 ```
 
-#Correlation matrix 1 is good, all charachters are removed, since
-correlation can be perform on numeric only
 
 ```{r}
 cor_result = cor(as.matrix(train_num_only))
@@ -450,10 +443,10 @@ cor_result = cor(as.matrix(train_num_only))
 train_corr <- train_num_only %>% mutate_if(is.numeric, list(scale))
 cor(train_corr, use="pairwise.complete.obs", method = "spearman")   %>%  
   
-  corrplot( method = "pie", outline = T, addgrid.col = "darkgray", mar = c(0.1,0,0.1,0), order = 'AOE', type = "full",rect.col = "black", rect.lwd = 5, cl.pos = "b", tl.col = "black", tl.cex = 1, cl.cex =.5,tl.srt=50,col=c('#3C3838',"gray",'#338076'),number.cex = 7/ncol(train_corr))
+  corrplot( method = "pie", outline = T, addgrid.col = "darkgray", mar = c(0.1,0,0.1,0), order = 'AOE', type = "full",rect.col = "black", rect.lwd = 5, cl.pos = "b", tl.col = "black", tl.cex = 1, cl.cex =.5,tl.srt=50,col=c('#081A00',"gray",'#008055'),number.cex = 7/ncol(train_corr))
 ```
 
-#to check
+### Loading head of training data
 
 ```{r}
 class(train_corr)
@@ -462,13 +455,14 @@ head(train_corr)
 
 
 
-# The XGBoost model, a boosting technique in machine learning, is known for its ability to generate highly accurate predictive models.
+##Create The XGBoost model
+XBBoost is a boosting technique in machine learning,  known for its ability to generate highly accurate predictive models.
 
-#**How deal with am imbalanced dataset? 
+####How deal with am imbalanced dataset? 
 There are numerous approaches, and while many of them are valid, this time we decided to take a different path.
 
 
-# How we proceed:
+#### How we proceed:
 
 Our approach is as follows:
 
@@ -480,19 +474,17 @@ Our approach is as follows:
 Since all customers in the submission dataset are uninterested, we will focus solely on evaluating the model's metrics.
 
 
-# We will tune some XGB parameters with gridsearch.
+### We will tune some XGB parameters with gridsearch.
 
 
-## XGB Gridsearch
-
-#Oversampling for gridsearch
+#### Oversampling for gridsearch
 
 ```{r}
 ov_sampling <- ovun.sample(formula = Response ~. ,data=train,method='both',N=100,seed=12)
 train_2<- ov_sampling$data
 ```
 
-# GRID SEARCH
+#### XGB GRID SEARCH
 
 ```{r}
 xgb_gridsearch <- function(train,ntrees) 
@@ -555,13 +547,10 @@ xgb_gridsearch <- function(train,ntrees)
 best_tune = xgb_gridsearch(train= train_2,ntrees = 1000)
 ```
 
-### Result: [1] "Best hyperparameters combination:"
-
-
 
 ## XGB model
 
-##**scale_pos_weight= 334399/46710 = 7.15** 
+####**scale_pos_weight= 334399/46710 = 7.15** 
 
 
 ```{r}
@@ -569,9 +558,9 @@ knitr::kable(table(train$Response),
              col.names = c('Response','#'))
 ```
 
-#### Launch Xgboost
+### Launch XGBoost
 
-```{r}
+```{r include=FALSE}
 train_xgt <- function(train_data,test_data,best_tune)
 {
   set.seed(123)
@@ -641,10 +630,10 @@ test_predictions <- train_xgt(train_data=train,
 
 ## Test XGB on a balanced dataset
 
-##**As a further test for our model, we will rebalance the original dataset and evaluate the model performance on a balanced dataset**
+As a further test for our model, we will rebalance the original dataset and evaluate the model performance on a balanced dataset
 
 
-# Rebalance dataset
+#### Rebalance dataset
 
 ```{r}
 ov_sampling <- ovun.sample(formula = Response ~. ,data=train,method='both',N=381109,seed=12)
@@ -724,7 +713,7 @@ train_xgt <- function(train_data,best_tune)
     geom_tile() +
     geom_text(aes(label = paste("",Freq,",",Perc,"%")), color = 'white', size = 4) +
     theme_light() +
-    scale_fill_gradient(low = "#3C3838", high = "#338076") + 
+    scale_fill_gradient(low = "#081A00", high = "#008055") + 
     scale_x_discrete(position = "top") +
     guides(fill=FALSE) 
   
@@ -759,36 +748,29 @@ train_xgt(train_data=train_3,
 
 
 
-# Submission (Checking Results) 
+## Submission (Checking Results) 
 
-## Submit XGB predictions
+### Submit XGB predictions
 
 ```{r}
 last_submission <- cbind(submission,predicted_response=round(test_predictions),real_predictions=test_predictions)
 head(last_submission,5)
 ```
 
-# Model Deployment
+### Model Deployment
 
 Once we've selected a model, we proceed to deploy it with a data pipeline into a production or production-like environment for final user acceptance. This prepares the model for seamless integration with the client's existing applications. We successfully deployed our model and presented it to Triks Insurance Ltd.
 
 From our initial understanding of the business, we identified several ways in which the client aims to benefit from this project:
 
-*Providing GOOL Auto with insights into the potential business Triks Insurance can generate from their existing client base.
-*Equipping Triks Insurance staff with a tool to prioritize clients for targeted marketing campaigns.
-*Enabling Triks Insurance to project future revenues.
-*Offering real-time notifications for potential cross-selling opportunities.
+-Providing GOOL Auto with insights into the potential business Triks Insurance can generate from their existing client base.
+-Equipping Triks Insurance staff with a tool to prioritize clients for targeted marketing campaigns.
+-Enabling Triks Insurance to project future revenues.
+-Offering real-time notifications for potential cross-selling opportunities.
 
 Pipelines can be developed for each of these requirements, although they fall outside the scope of this project. Predictions can be generated in real-time or on a batch basis. We have deployed the model to predict cross-sells based on user-provided customer input, including gender, age, region code, policy sales channel, vehicle age, and vehicle damage. Additionally, another deployment facilitates data file uploads, allowing predictions for entire datasets.
 
 
+## Conclusion
 
-
-
-
-
-# Conclusion
-
-
-
-
+To achieve better accuracy we performed a hyper parameter tuning of the other parameters such  (learning rate), max_depth (maximum depth of tree), sub sample values, etc by using a hyper grid and then achieved a better tuned mode.
